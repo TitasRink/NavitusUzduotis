@@ -13,18 +13,11 @@ namespace Business.Services
             Con = con;
         }
 
-        public void CreatClient(string name, int age, string message)
+        public void CreatClient(Client client)
         {
-            if (string.IsNullOrEmpty(name) || age == null || string.IsNullOrEmpty(message))
-            {
-                return;
-            }
-            else
-            {
-                Con.Clients.Add(new(name, age, message));
-                Con.ClientHistory.Add(new(name));
+                Con.Clients.Add(new(client.Name, client.Age, client.Message));
+                Con.ClientHistory.Add(new(client.Name));
                 Con.SaveChanges();
-            }
         }
 
         public List<Client> GetAllClients()

@@ -12,10 +12,10 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 //app.MapControllers();
 app.MapControllerRoute(
-    name: "ClientController",
+    name: "controller",
     pattern: "api/{controller=Home}/{action=Index}/{id?}");
 app.Run();

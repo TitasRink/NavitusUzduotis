@@ -1,42 +1,42 @@
-﻿using Business.Interfaces;
+using Business.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Entities;
 
-namespace Navitus.API.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ClientController : ControllerBase
+    public class WeatherForecastController : ControllerBase
     {
         private readonly IClientServices clientService;
 
-        [HttpPost]
-        public void Create(string name, int age, string message)
+        [HttpPost("Create")]
+        public void Create([FromBody]Client client)
         {
-            clientService.CreatClient(name, age, message);
+            clientService.CreatClient(client);
         }
 
-        [HttpPost]
-        public ActionResult GetAllClients()
+        [HttpGet("GetAllClients")]
+        public List<Client> GetAllClients()
         {
             var result = clientService.GetAllClients();
-            return Ok(result);
+            return result;
         }
 
-        [HttpGet]
+        [HttpGet("GetClientID")]
         public ActionResult GetCLient(int id)
         {
             var result = clientService.GetClientByID(id);
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("EditClient")]
         public void EditClient(int id, [FromBody] Client client)
         {
             clientService.EditCLientByID(id, client.Name, client.Age, client.Message);
         }
 
-        [HttpPost]
+        [HttpPost("Delete")]
         public void Delete(int id)
         {
             clientService.RemoveCLient(id);
