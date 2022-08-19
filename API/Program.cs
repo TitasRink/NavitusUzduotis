@@ -1,6 +1,7 @@
 using Business.Interfaces;
 using Business.Services;
 using Microsoft.OpenApi.Models;
+using Navitus.Repository.DBConfig;
 using Repository.SqlDB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddScoped < IClientServices, ClientServices>();
+builder.Services.AddScoped<IClientServices, ClientServices>();
+builder.Services.AddScoped<IDbConfiguration, DbConfiguration>();
 builder.Services.AddDbContext<SqlConnection>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>

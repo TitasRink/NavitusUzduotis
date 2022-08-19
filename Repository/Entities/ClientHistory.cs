@@ -6,32 +6,17 @@ namespace Repository.Entities
     {
         [Key]
         public int Id { get; set; }
-        public DateTime Registered { get; set; }
-        public DateTime LastUpdated { get; set; }
-        public DateTime Deleted { get; set; }
-        public Client _Client { get; set; }
+        [MaxLength(500)]
+        public string Log { get; set; }
+        public int ClientId { get; set; }
 
         public ClientHistory()
         {
         }
-
-        public ClientHistory(string name)
+        public ClientHistory(int clientID, string log)
         {
-            _Client.Name = name;
-            Registered = DateTime.Now;
-        }
-
-        public ClientHistory(int id)
-        {
-            _Client.Id = id;
-            LastUpdated = DateTime.Now;
-        }
-
-        public ClientHistory(int id, string name)
-        {
-            _Client.Id = id;
-            _Client.Name = name;
-            Deleted = DateTime.Now;
+            ClientId = clientID;
+            Log = log;
         }
     }
 }

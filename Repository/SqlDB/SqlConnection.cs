@@ -1,15 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Navitus.Repository.DBConfig;
 using Repository.Entities;
 
 namespace Repository.SqlDB
 {
-    public class SqlConnection: DbContext
+    public class SqlConnection : DbContext
     {
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientHistory> ClientHistory { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+    
+        public SqlConnection(IDbConfiguration options) : base(options.Options)
         {
-            builder.UseSqlServer("Server=localhost;Database=Uzduotis;Trusted_Connection=True;");
+
         }
     }
 }

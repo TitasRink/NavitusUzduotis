@@ -1,10 +1,17 @@
-
+using Business.Interfaces;
+using Business.Services;
+using Navitus.Repository.DBConfig;
+using Repository.SqlDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IClientServices, ClientServices>();
+builder.Services.AddScoped<IDbConfiguration, DbConfiguration>();
+builder.Services.AddDbContext<SqlConnection>();
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
@@ -12,9 +19,6 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
-
-//app.MapControllers();
 app.MapControllerRoute(
     name: "controller",
     pattern: "api/{controller=Home}/{action=Index}/{id?}");

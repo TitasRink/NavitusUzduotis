@@ -1,6 +1,7 @@
 ﻿using Business.Interfaces;
 using Repository.Entities;
 using Repository.SqlDB;
+using System.Text.Json;
 
 namespace Business.Services
 {
@@ -13,11 +14,17 @@ namespace Business.Services
             Con = con;
         }
 
-        public void CreatClient(Client client)
+        public void CreatClient(string name, int age, string message)
         {
-                Con.Clients.Add(new(client.Name, client.Age, client.Message));
-                Con.ClientHistory.Add(new(client.Name));
-                Con.SaveChanges();
+            string time = $"Registered {DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")}";
+            Con.Clients.Add(new(name,age,message));
+            Con.SaveChanges();
+            var res = Con.Clients.Where(x => x.Name == name && x.Age == age).FirstOrDefault().Id;
+            var log = new ClientHistory(res, time);
+            var jsonString = JsonSerializer.Serialize(log);
+            log.Log = jsonString;
+            Con.ClientHistory.Add(log);
+            Con.SaveChanges();
         }
 
         public List<Client> GetAllClients()
@@ -41,6 +48,7 @@ namespace Business.Services
 
         public void EditCLientByID(int id, string name, int age, string message)
         {
+            string time = $"LastUpdated {DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")}";
             if (string.IsNullOrEmpty(name) || age == null || string.IsNullOrEmpty(message))
             {
                 return;
@@ -58,7 +66,10 @@ namespace Business.Services
                     result.Age = age;
                     result.Name = name;
                     result.Message = message;
-                    Con.ClientHistory.Add(new(id));
+                    var log = new ClientHistory(id, time);
+                    var jsonString = JsonSerializer.Serialize(log);
+                    log.Log = jsonString;
+                    Con.ClientHistory.Add(log);
                     Con.SaveChanges();
                 }
             }
@@ -66,6 +77,8 @@ namespace Business.Services
 
         public void RemoveCLient(int id)
         {
+            string time = $"LastUpdated {DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")}";
+
             if (id == null)
             {
                 return;
@@ -73,15 +86,18 @@ namespace Business.Services
             else
             {
                 var result = Con.Clients.Where(x => x.Id == id).FirstOrDefault();
-                Con.ClientHistory.Add(new(result.Id, result.Name));
+                var log = new ClientHistory(result.Id, time);
+                var jsonString = JsonSerializer.Serialize(log);
+                log.Log = jsonString;
+                Con.ClientHistory.Add(log);
                 Con.Clients.Remove(result);
                 Con.SaveChanges();
             }
         }
 
-        public List<ClientHistory> GetActionHistory()
+        public List<ClientHistory> GetActionHistory(int id)
         {
-            var result = Con.ClientHistory.ToList();
+            var result = Con.ClientHistory.Where(x=>x.ClientId == id).ToList();
             return result;
         }
     }

@@ -6,14 +6,20 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class ClientController : ControllerBase
     {
         private readonly IClientServices clientService;
+        private readonly IConfiguration configuration;
+        public ClientController(IClientServices clientService, IConfiguration configuration)
+        {
+            this.clientService = clientService;
+            this.configuration = configuration;
+        }
 
         [HttpPost("Create")]
         public void Create([FromBody]Client client)
         {
-            clientService.CreatClient(client);
+            clientService.CreatClient(client.Name, client.Age, client.Message);
         }
 
         [HttpGet("GetAllClients")]
@@ -40,6 +46,13 @@ namespace API.Controllers
         public void Delete(int id)
         {
             clientService.RemoveCLient(id);
+        }
+
+        [HttpGet("GetHistory")]
+        public List<ClientHistory> GetHistory(int id)
+        {
+            var result = clientService.GetActionHistory(id);
+            return result;
         }
     }
 }
